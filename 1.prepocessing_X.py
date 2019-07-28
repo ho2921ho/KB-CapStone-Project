@@ -110,8 +110,7 @@ allstr2 = allstr2.iloc[:,range(s,e+1)]
 allstr2[isnan(allstr2)] = 0
 
 clust_iX = pd.concat([clust_iX,allstr2], axis = 1)
-clust_iX .to_csv("pre_model data_X")
-
+clust_iX.to_csv("pre_model data_X.csv", encoding = 'utf-8')
 
 #%% X&점포수&매출 최종 merge 후 저장.
 for i in range(len(sepistr)): # 불필요한 열 제거.
