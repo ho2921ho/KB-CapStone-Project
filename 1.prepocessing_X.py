@@ -143,8 +143,8 @@ allstr2[isnan(allstr2)] = 0
 
 # 위와 같이 처리된 값을, clust_iX에 합친 후, csv로 저장함
 clust_iX = pd.concat([clust_iX,allstr2], axis = 1)
-clust_iX .to_csv("pre_model data_X.csv")
 
+clust_iX.to_csv("pre_model data_X.csv", encoding = 'utf-8')
 
 #%% X&점포수&매출 최종 merge 후 저장.
 for i in range(len(sepistr)): # 불필요한 열 제거.
