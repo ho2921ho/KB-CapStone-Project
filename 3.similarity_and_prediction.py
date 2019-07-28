@@ -64,4 +64,8 @@ median = target_dist.iloc[0:11,:]['SELNG_PRER_STOR'].median()
 
 similar_area = target_dist.iloc[0:10,:][target_dist.iloc[0:10,:]['SELNG_PRER_STOR'] == median]
 
+## 3.3 매출 예측
+
+train = df[~isnan(df['SELNG_PRER_STOR'])] 
+test = df[isnan(df['SELNG_PRER_STOR'])]
 
