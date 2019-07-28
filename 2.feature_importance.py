@@ -61,5 +61,37 @@ for i, df_coef in enumerate(coeflist):
     tablelist.append(table)        
 
 ## save
+
 for i,df in enumerate(tablelist):
     df.to_csv("C:/DATA/KB_capstone/table(Ysqrt_pearson)/" + indilist[i]+".csv",  encoding = "ms949")
+
+## 매출 예측과 유사상권 정의를 위한 중요변수 fitering -> 상관계수의 절대값이 0.15이상인 변수만 사용.
+
+from tqdm import tqdm
+## coeff
+
+featurelist = []
+for i, df_coef in enumerate(coeflist):
+    df_coef = df_coef[df_coef["Value"].abs() > 0.15]
+    featurelist.append(df_coef.index)
+## 
+newlist = []
+for i in featurelist:
+    print(i)
+    newlist.append(map(lambda x: x.replace(" vs SELNG_PRER_STOR",""),i))
+
+Vsm = []
+for i,df in enumerate(Vm):
+    print(i)
+    Vsm.append(df.loc[:,newlist[i]])
+
+for i,df in enumerate(Vsm):
+    print(i)
+    df = pd.concat([Vm[i][["STDR_YM_CD",'TRDAR_CD']],df], axis = 1)
+    y = pd.DataFrame(Vm[i]["THSMON_SELNG_AMT"] / Vm[i]["STOR_CO"], columns = ["SELNG_PRER_STOR"])
+    df = pd.concat([df,y], axis = 1)
+    df.to_csv('C:/DATA/KB_capstone/filtered_data/'+indilist[i]+'_filterd.csv', encoding = "ms949", index =False)
+
+
+test = X.corr()
+test2= test.ix["MT_AVRG_INCOME_AMT"]
