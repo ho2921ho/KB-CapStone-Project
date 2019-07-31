@@ -51,12 +51,10 @@ mean_coef = sum_coef / 10
 ## 업종마다 상관계수 값이 상위 50개인 변수만을 분석대상으로 하여 
 ## 매출에 대한 특정 변수의 절대적인 중요도와 상대적인 중요도를 업종별로 정리.
 
-df_coef = coeflist[0]
-
 tablelist = []
 for i, df_coef in enumerate(coeflist):
     df_import = df_coef / mean_coef
-    table = df_coef.merge(df_import['Value'], how = 'left', on = df_coef.index)
+    table = df_coef.merge(df_import['Value'].to_frame(), how = 'left', on = df_coef.index)
     table = table.rename({'key_0': indilist[i]+' variable_name','Value_x':'A_import','Value_y':'R_import'}, axis = 1)
     tablelist.append(table)        
 
