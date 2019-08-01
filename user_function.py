@@ -258,6 +258,73 @@ def DataXPro(df):
    
     return (X)
 
+def DataXPro_for_model(df):
+    df = df.fillna(0)
+    ## X,y 나누기.
+    X = df.copy()
+    ## 전처리.. 
+    #1. 소비를 상주인구로 나눈다. !!! 소비의 결측값 처리!! 결측은 결측으로!
+    s = "EXPNDTR_TOTAMT"
+    e = "PLESR_EXPNDTR_TOTAMT"
+    tmp= sepfun(df,s,e,"TOT_REPOP_CO")
+    tmp[tmp.iloc[:,0] == 0] =  np.nan
+    X.iloc[:,range(X.columns.get_loc(s),X.columns.get_loc(e)+1)] = tmp
+
+    # 3. 인구비율 자료를 추가한다. 
+    # 3-1 유동인구
+    tmp = sepfun(df,"SEX_TOT_FLPOP_CO","FAG_60_ABOVE_SUNTM_6_FLPOP_CO","SEX_TOT_FLPOP_CO")
+    tmp.columns = map(lambda x : x.replace('_CO','_RATIO'),list(tmp))
+    X = pd.concat([X,tmp], axis = 1) 
+    # 3-2 상주인구
+    tmp = sepfun(df,"TOT_REPOP_CO","FAG_60_ABOVE_REPOP_CO","TOT_REPOP_CO")
+    tmp.columns = map(lambda x : x.replace('_CO','_RATIO'),list(tmp))
+    X = pd.concat([X,tmp], axis = 1) 
+    # 3-3 직장인구
+    tmp = sepfun(df,"TOT_WRC_POPLTN_CO","FAG_60_ABOVE_WRC_POPLTN_CO","TOT_WRC_POPLTN_CO")
+    tmp.columns = map(lambda x : x.replace('_CO','_RATIO'),list(tmp))
+    X = pd.concat([X,tmp], axis = 1) 
+    
+    # 2. 단위면적으로 인구자료를 나눈다. 
+    ## 2-1 유동인구
+    s = X.columns.get_loc("SEX_TOT_FLPOP_CO")
+    e = X.columns.get_loc("FAG_60_ABOVE_SUNTM_6_FLPOP_CO")
+    X.iloc[:,range(s,e+1)] = sepfun(df,"SEX_TOT_FLPOP_CO","FAG_60_ABOVE_SUNTM_6_FLPOP_CO","Shape_Area")
+    ## 2-2 상주인구
+    s = X.columns.get_loc("TOT_REPOP_CO")
+    e = X.columns.get_loc("FAG_60_ABOVE_REPOP_CO")
+    X.iloc[:,range(s,e+1)] = sepfun(df,"TOT_REPOP_CO","FAG_60_ABOVE_REPOP_CO","Shape_Area")
+    ## 2-3 직장인구
+    s = X.columns.get_loc("TOT_WRC_POPLTN_CO")
+    e = X.columns.get_loc("FAG_60_ABOVE_WRC_POPLTN_CO")
+    X.iloc[:,range(s,e+1)] = sepfun(df,"TOT_WRC_POPLTN_CO","FAG_60_ABOVE_WRC_POPLTN_CO","Shape_Area")
+
+
+    #4 소득의 nan 처리.
+    s = "MT_AVRG_INCOME_AMT"
+    e = "INCOME_SCTN_CD"
+    tmp = X.iloc[:,range(X.columns.get_loc(s),X.columns.get_loc(e)+1)]
+    tmp[tmp.iloc[:,0] == 0] =  np.nan
+    X.iloc[:,range(X.columns.get_loc(s),X.columns.get_loc(e)+1)] = tmp
+    
+    #5 아파트 변수를 면적으로 나누쟈. 
+    s = "APT_HSMP_CO"
+    e = "PC_6_HDMIL_ABOVE_HSHLD_CO"
+    tmp= sepfun(df,s,e,"Shape_Area")
+    X.iloc[:,range(X.columns.get_loc(s),X.columns.get_loc(e)+1)] = tmp
+    
+    #6. 상권 집객시설을 면적으로 나누자. 
+    s = "VIATR_FCLTY_CO"
+    e = "BUS_STTN_CO"
+    tmp= sepfun(df,s,e,"Shape_Area")
+    X.iloc[:,range(X.columns.get_loc(s),X.columns.get_loc(e)+1)] = tmp
+
+    #7. 다른 업종 점포수를 단위면적으로 나누기. 
+    s = "PC방_STOR_CO"
+    e = "휴대폰_STOR_CO"
+    tmp= sepfun(df,s,e,"Shape_Area")
+    X.iloc[:,range(X.columns.get_loc(s),X.columns.get_loc(e)+1)] = tmp
+   
+    return (X)
 
 def Model(X,y):
 

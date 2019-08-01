@@ -156,10 +156,9 @@ mean_coef = sum_coef / 10
 ## 업종마다 상관계수 값이 상위 50개인 변수만을 분석대상으로 하여 
 ## 매출에 대한 특정 변수의 절대적인 중요도와 상대적인 중요도를 업종별로 정리.
 
-df_coef = coeflist[0]
-
 # 기존의 correlation을 절대적 중요도라 칭하며, df_import를 상대적 중요도로 칭하며
 # A_import = 절대적 중요도, R_import = 상대적 중요도로 정의
+
 tablelist = []
 for i, df_coef in enumerate(coeflist):
     df_import = df_coef / mean_coef
