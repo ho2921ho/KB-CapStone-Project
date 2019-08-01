@@ -125,6 +125,8 @@ df = Vfm[-4]
 df = df[df['STDR_YM_CD'] == 201804]
 
 # 결측상권인 곳을 nan_area로 저장
+
+
 nan_area = df[isnan(df['SELNG_PRER_STOR'])]
 
 from scipy.spatial.distance import pdist, squareform
