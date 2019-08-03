@@ -121,23 +121,30 @@ for i,df in enumerate(Vfm):
 ## 결측 상권과 유사한 특징을 갖는 상권을 유사상권으로 정의하고 해당 상권의 통계치를 대신하여 제공.
 ## 커피음료점을 대상으로 예시.
 
+import pandas as pd
+from numpy import isnan
+
+df = pd.read_csv(r'C:\DATA\KB_capstone\model_data\커피음료_model.csv', engine = 'python') 
 df = Vfm[-4]
 df = df[df['STDR_YM_CD'] == 201804]
 
 # 결측상권인 곳을 nan_area로 저장
 
-
 nan_area = df[isnan(df['SELNG_PRER_STOR'])]
 
-from scipy.spatial.distance import pdist, squareform
+from scipy.spatial.distance import cdist 
 
-dist = pdist(df[list(df)[2:-1]].dropna(0), 'euclidean')
-df_dist = pd.DataFrame(squareform(dist))
+X = df[list(df)[2:-1]].dropna(0).values
+df_dist = cdist(X,X, 'euclidean')
+
+tdr_code = df[list(df)[2:-1]].dropna(0).index
+
+df_dist  = pd.DataFrame(df_dist, index = tdr_code)
 
 target_nan_area = 1088
-target_dist = df_dist[target_nan_area-1].sort_values() # 재현성 도중 여기서 에러남
+target_dist = df_dist[target_nan_area].sort_values() # 재현성 도중 여기서 에러남
 target_dist = target_dist.to_frame()
-target_dist['TRDAR_CD'] = target_dist.index.values + 1 
+target_dist['TRDAR_CD'] = target_dist.index
 target_dist = target_dist.merge(df[['TRDAR_CD','SELNG_PRER_STOR']], how = 'left', on = ['TRDAR_CD'])
 target_dist = target_dist.dropna()
 target_dist.reset_index(drop = True, inplace = True)
