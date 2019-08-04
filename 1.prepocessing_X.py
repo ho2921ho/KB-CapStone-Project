@@ -167,6 +167,7 @@ for index, df in enumerate(Trdarlist):
 
 indilist = sorted(['양식집','치킨집','제과점','분식집','일식집','커피음료','중국집','호프간이주점','한식음식점','패스트푸드점'])
 
+os.mkdir('seperated data')
 # 업종별로 데이터를 추출 후, 별개의 csv파일로서 저장함
 for i in range(len(Trdarlist)):
     print(i)

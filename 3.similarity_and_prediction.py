@@ -112,6 +112,8 @@ for index, name in enumerate(names):
     name = name.replace("_filterd.csv", "")
     indilist.append(name)
 
+os.makedirs('model_data')
+
 # 업종별로 데이터를 저장함
 for i,df in enumerate(Vfm):
     df.to_csv('C:/DATA/KB_capstone/model_data/'+indilist[i]+'_model.csv', encoding = "ms949", index =False)
@@ -124,7 +126,6 @@ for i,df in enumerate(Vfm):
 import pandas as pd
 from numpy import isnan
 
-df = pd.read_csv(r'C:\DATA\KB_capstone\model_data\커피음료_model.csv', engine = 'python') 
 df = Vfm[-4]
 df = df[df['STDR_YM_CD'] == 201804]
 
@@ -134,10 +135,10 @@ nan_area = df[isnan(df['SELNG_PRER_STOR'])]
 
 from scipy.spatial.distance import cdist 
 
-X = df[list(df)[2:-1]].dropna(0).values
+X = df[list(df)[2:-1]].fillna(0).values
 df_dist = cdist(X,X, 'euclidean')
 
-tdr_code = df[list(df)[2:-1]].dropna(0).index
+tdr_code = df[list(df)[2:-1]].fillna(0).index
 
 df_dist  = pd.DataFrame(df_dist, index = tdr_code)
 

@@ -166,13 +166,14 @@ for i, df_coef in enumerate(coeflist):
     table = table.rename({'key_0': indilist[i]+' variable_name','Value_x':'A_import','Value_y':'R_import'}, axis = 1)
     tablelist.append(table)        
 
+os.makedirs('table(Ysqrt_pearson)')
+
 ## save
 for i,df in enumerate(tablelist):
     df.to_csv("C:/DATA/KB_capstone/table(Ysqrt_pearson)/" + indilist[i]+".csv",  encoding = "ms949")
 
 ## 매출 예측과 유사상권 정의를 위한 중요변수 fitering -> 상관계수의 절대값이 0.15이상인 변수만 사용.
 
-from tqdm import tqdm
 ## coeff
 # df_coef['Value']의 절대값이 0.15이상인 값을 featurelist에 저장
 featurelist = []
@@ -190,6 +191,8 @@ Vsm = []
 for i,df in enumerate(Vm):
     print(i)
     Vsm.append(df.loc[:,newlist[i]])
+
+os.makedirs('filtered_data')
 
 for i,df in enumerate(Vsm):
     print(i)
